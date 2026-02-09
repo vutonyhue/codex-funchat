@@ -1,0 +1,92 @@
+# FunChat API Gateway - Cloudflare Worker Configuration
+# See: https://developers.cloudflare.com/workers/wrangler/configuration/
+
+name = "funchat-api-gateway"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Account ID (optional - will use logged in account)
+# account_id = "your-account-id"
+
+# Workers Logs - enable for debugging
+# [observability]
+# enabled = true
+
+# ============================================================================
+# KV Namespaces
+# ============================================================================
+# Run `npm run setup:kv` to create these, then update the IDs below
+# Or run `npm run setup` for automated setup
+
+[[kv_namespaces]]
+binding = "API_KEY_CACHE"
+id = "8c24ac5e7cad41098e28107295df6e9d"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "3bc338be1bf9492182af77634f580e9b"
+
+[[kv_namespaces]]
+binding = "JWKS_CACHE"
+id = "7d76aae6b6fb45618a950ce732512f03"
+
+[[kv_namespaces]]
+binding = "TYPING_STATE"
+id = "3bc338be1bf9492182af77634f580e9b"
+
+# ============================================================================
+# Environment Variables (non-sensitive)
+# ============================================================================
+
+[vars]
+SUPABASE_FUNCTIONS_URL = "https://dgeadmmbkvcsgizsnbpi.supabase.co/functions/v1"
+# Comma-separated list of allowed origins
+ALLOWED_ORIGINS = "https://holo-talk-cash.lovable.app,https://preview.lovable.app,https://id-preview--95ab1465-109c-431b-9708-379f2eb0fa9b.lovable.app,*.lovable.app,*.lovableproject.com"
+
+# ============================================================================
+# Secrets (set via `wrangler secret put` or `npm run setup:secrets`)
+# ============================================================================
+# SUPABASE_URL - Your Supabase project URL
+# SUPABASE_SERVICE_KEY - Your Supabase service role key
+# SUPABASE_JWT_SECRET - Your Supabase JWT secret (for verifying user tokens)
+
+# ============================================================================
+# Production Environment
+# ============================================================================
+
+[env.production]
+name = "funchat-api-gateway-prod"
+
+[[env.production.kv_namespaces]]
+binding = "API_KEY_CACHE"
+id = "bb49e1b278374c9b88e08effb703767c"
+
+[[env.production.kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "2703197501cb4e98bda9198eae339df7"
+
+[[env.production.kv_namespaces]]
+binding = "JWKS_CACHE"
+id = "ec84667c50ba4993b887c368e8b8e141"
+
+[[env.production.kv_namespaces]]
+binding = "TYPING_STATE"
+id = "19b2739863a94d0190fb1add24ee8c04"
+
+[env.production.vars]
+SUPABASE_FUNCTIONS_URL = "https://dgeadmmbkvcsgizsnbpi.supabase.co/functions/v1"
+ALLOWED_ORIGINS = "https://holo-talk-cash.lovable.app,https://preview.lovable.app,*.lovable.app,*.lovableproject.com"
+
+# ============================================================================
+# Routes (optional - for custom domain)
+# ============================================================================
+# routes = [
+#   { pattern = "api.funchat.io/*", zone_name = "funchat.io" }
+# ]
+
+# ============================================================================
+# Triggers (optional - for scheduled tasks)
+# ============================================================================
+# [triggers]
+# crons = ["0 * * * *"]  # Every hour

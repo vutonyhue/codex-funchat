@@ -1,0 +1,37 @@
+// Centralized Cloudflare Worker URLs.
+//
+// Uses fallback URLs if environment variables are missing,
+// allowing the app to run while logging warnings.
+// Supports different URLs for Preview vs Published environments.
+
+function getViteEnv(
+  key: "VITE_API_BASE_URL" | "VITE_AGORA_TOKEN_WORKER_URL",
+  fallback: string
+): string {
+  const value = import.meta.env[key];
+  if (!value) {
+    console.warn(
+      `[config] ⚠️ Missing ${key}. Using fallback for current environment.`
+    );
+    return fallback;
+  }
+  return value;
+}
+
+// URL API Gateway duy nhất cho tất cả môi trường
+const API_GATEWAY_URL = "https://funchat-api-gateway-prod.lequangvu2210-hue.workers.dev";
+
+export const API_BASE_URL = getViteEnv(
+  "VITE_API_BASE_URL",
+  API_GATEWAY_URL
+);
+
+export const AGORA_TOKEN_WORKER_URL = getViteEnv(
+  "VITE_AGORA_TOKEN_WORKER_URL",
+  "https://agora-token-worker.lequangvu2210-hue.workers.dev"
+);
+
+// Debug log in development
+if (import.meta.env.DEV) {
+  console.log('[config] API_BASE_URL:', API_BASE_URL);
+}
